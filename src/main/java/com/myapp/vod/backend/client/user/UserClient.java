@@ -2,6 +2,7 @@ package com.myapp.vod.backend.client.user;
 
 import com.myapp.vod.backend.config.BackendConfig;
 import com.myapp.vod.backend.domain.UserDto;
+import com.myapp.vod.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,37 +38,30 @@ public class UserClient {
         }
     }
 
-    public List<UserDto> getUsers() {
-        URI url = UriComponentsBuilder.fromHttpUrl(backendConfig.getBackendApiEndpoint() + "users")
-                .build()
-                .encode()
-                .toUri();
-
-        try {
-           UserDto[] response = restTemplate.getForObject(url, UserDto[].class);
-           return Arrays.asList(Optional.ofNullable(response).orElse(new UserDto[0]));
-        }
-        catch (RestClientException e) {
-            LOGGER.error(e.getMessage(), e);
-            return new ArrayList<>();
-        }
-    }
-
     public UserDto getUser(Integer userId) {
         URI url = UriComponentsBuilder.fromHttpUrl(backendConfig.getBackendApiEndpoint() + "users")
-                .pathSegment("" + userId)
+                .pathSegment(userId.toString())
                 .build()
                 .encode()
                 .toUri();
 
         try {
             UserDto response = restTemplate.getForObject(url, UserDto.class);
-            return Optional.ofNullable(response).orElse(null);
+            return Optional.ofNullable(response).orElseThrow(UserNotFoundException::new);
         }
         catch (RestClientException e) {
             LOGGER.error(e.getMessage(), e);
             return null;
         }
+    }
+
+    public void updateUser(UserDto userDto) {
+        URI url = UriComponentsBuilder.fromHttpUrl(backendConfig.getBackendApiEndpoint() + "users")
+                .build()
+                .encode()
+                .toUri();
+
+           restTemplate.put(url, userDto);
     }
 
 }

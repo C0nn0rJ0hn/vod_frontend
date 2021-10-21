@@ -8,6 +8,8 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -20,10 +22,11 @@ import com.vaadin.flow.router.Route;
 @PageTitle("Register")
 public class RegisterView extends Composite {
 
+
         private final RegisterService registerService;
 
         public RegisterView(RegisterService registerService) {
-        this.registerService = registerService;
+                this.registerService = registerService;
         }
 
         @Override
@@ -41,24 +44,28 @@ public class RegisterView extends Composite {
                 TextField language = new TextField("Language");
                 Button send = new Button("Register" ,event -> {
                 registerService.register(
-                    name.getValue(),
-                    lastname.getValue(),
-                    birthDate.getValue().toString(),
-                    comboBox.getValue(),
-                    email.getValue(),
-                    password.getValue(),
-                    country.getValue(),
-                    language.getValue());
+                        name.getValue(),
+                        lastname.getValue(),
+                        birthDate.getValue().toString(),
+                        comboBox.getValue(),
+                        email.getValue(),
+                        password.getValue(),
+                        country.getValue(),
+                        language.getValue());
                 });
 
-                return new VerticalLayout(
+                VerticalLayout layout = new VerticalLayout(
                 new H2("Register"),
                 new HorizontalLayout(name, lastname),
                 new HorizontalLayout(birthDate, comboBox),
                 new HorizontalLayout(email, password),
                 new HorizontalLayout(country, language),
+                new Label("To register, please complete all fields"),
                 send
                 );
-
+                layout.setSizeFull();
+                layout.setAlignItems(FlexComponent.Alignment.CENTER);
+                layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+                return layout;
         }
 }

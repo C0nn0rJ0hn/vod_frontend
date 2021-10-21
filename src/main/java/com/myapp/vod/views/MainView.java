@@ -13,22 +13,18 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.PWA;
+
 
 import java.util.Optional;
-@PWA(name = "VoD App Starter", shortName = "Vaadin VoD App", startPath = "login")
+
+
 public class MainView extends AppLayout {
     private final Tabs menu;
     private H1 viewTitle;
 
     public MainView() {
-        // Use the drawer for the menu
         setPrimarySection(Section.DRAWER);
-
-        // Make the nav bar a header
         addToNavbar(true, createHeaderContent());
-
-        // Put the menu in the drawer
         menu = createMenu();
         addToDrawer(createDrawerContent(menu));
     }
@@ -36,23 +32,16 @@ public class MainView extends AppLayout {
     private Component createHeaderContent() {
         HorizontalLayout layout = new HorizontalLayout();
 
-        // Configure styling for the header
         layout.setId("header");
         layout.getThemeList().set("dark", true);
         layout.setWidthFull();
         layout.setSpacing(false);
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
 
-        // Have the drawer toggle button on the left
         layout.add(new DrawerToggle());
 
-        // Placeholder for the title of the current view.
-        // The title will be set after navigation.
         viewTitle = new H1();
         layout.add(viewTitle);
-
-        // A user icon
-        //layout.add(new Image("images/user.svg", "Avatar"));
 
         return layout;
     }
@@ -60,21 +49,17 @@ public class MainView extends AppLayout {
     private Component createDrawerContent(Tabs menu) {
         VerticalLayout layout = new VerticalLayout();
 
-        // Configure styling for the drawer
         layout.setSizeFull();
         layout.setPadding(false);
         layout.setSpacing(false);
         layout.getThemeList().set("spacing-s", true);
         layout.setAlignItems(FlexComponent.Alignment.STRETCH);
 
-        // Have a drawer header with an application logo
         HorizontalLayout logoLayout = new HorizontalLayout();
         logoLayout.setId("logo");
         logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        //logoLayout.add(new Image("images/logo.png", "My Project logo"));
         logoLayout.add(new H1("VoD App"));
 
-        // Display the logo and the menu in the drawer
         layout.add(logoLayout, menu);
         return layout;
     }
@@ -89,9 +74,15 @@ public class MainView extends AppLayout {
     }
 
     private Component[] createMenuItems() {
-        return new Tab[]{
+        return new Tab[] {
                 createTab("Home", HomeView.class),
-                createTab("Logout", LogoutView.class)};
+                createTab("Watchlist", WatchlistView.class),
+                createTab("Rents", RentView.class),
+                createTab("Purchases", BuyView.class),
+                createTab("Account", AccountView.class),
+                createTab("Logout", LogoutView.class),
+        };
+
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
@@ -104,11 +95,7 @@ public class MainView extends AppLayout {
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
-
-        // Select the tab corresponding to currently shown view
         getTabForComponent(getContent()).ifPresent(menu::setSelectedTab);
-
-        // Set the view title in the header
         viewTitle.setText(getCurrentPageTitle());
     }
 
